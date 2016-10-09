@@ -1,24 +1,48 @@
 # Brainfux
 
-**TODO: Add description**
+Brainfux translates brainfuck code into elixir function with the great power of elixir macro.
 
-## Installation
+## Usage
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+```elixir
+defmodule Sample do
+  use Brainfux
 
-  1. Add `brainfux` to your list of dependencies in `mix.exs`:
+  # Define bf function
+  defbf hello_world, """
+    +++++++++
+    [
+      >++++++++
+      >+++++++++++
+      >+++++
+      <<<-
+    ]
+    >.
+    >++.+++++++..+++.
+    >-.------------.
+    <++++++++.--------.+++.------.--------.
+    >+.
+  """
 
-    ```elixir
-    def deps do
-      [{:brainfux, "~> 0.1.0"}]
-    end
-    ```
+  # bf function that reads input
+  defbf echo, """
+    [,.]
+  """
 
-  2. Ensure `brainfux` is started before your application:
+  @spec shift_strings([String.t]) :: [String.t]
+  def shift_stings(strings) do
+    # The bfn macro makes an anonymous bf function
+    Enum.map(strings, bfn "[,+.]")
+  end
+end
 
-    ```elixir
-    def application do
-      [applications: [:brainfux]]
-    end
-    ```
+Sample.hello_world
+# => "Hello, world!"
 
+# You can pass string as an input
+Sample.echo("foo")
+# => "foo"
+
+Sample.shift_strings(["abc", "HAL"])
+# => ["bcd", "IBM"]
+```
