@@ -35,7 +35,7 @@ defmodule Sample do
   """
 
   @spec shift_string(String.t) :: String.t
-  def shift_sting(str) do
+  def shift_string(str) do
     # The bfn macro makes an anonymous bf function
     (bfn ",[+.,]").(str)
   end
