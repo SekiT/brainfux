@@ -51,3 +51,16 @@ Sample.echo("foo")
 Sample.shift_string("HAL")
 # => "IBM"
 ```
+
+## Infinite loops
+
+Infinite loops are not detected at compile time, so the termination of functions are not completely ensured.
+```elixir
+use Brainfux
+
+(bfn ",[+]").("a")
+# => never ends
+
+(bfn "+[>+]").("")
+# => ** (MatchError) no match of right hand side value: []
+```
