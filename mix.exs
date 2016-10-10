@@ -4,7 +4,7 @@ defmodule Brainfux.Mixfile do
   def project do
     [
       app: :brainfux,
-      version: "0.0.0",
+      version: "0.1.0",
       elixir: "~> 1.3",
       name: "Brainfux",
       deps: deps(),
