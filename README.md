@@ -53,13 +53,13 @@ Sample.shift_string("HAL")
 
 ## Infinite loops
 
-Infinite loops are not detected at compile time, so the termination of functions are not completely ensured.
+Infinite loops are not detected at compile time, so the termination of functions are not ensured.
 ```elixir
 use Brainfux
 
 (bfn ",[+]").("a")
 # => never ends
 
-(bfn "+[>+]").("")
-# => ** (MatchError) no match of right hand side value: []
+(bfn "+[>-]").("")
+# => never ends
 ```
