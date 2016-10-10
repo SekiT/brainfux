@@ -5,6 +5,8 @@ Brainfux translates brainfuck code into elixir function.
 At the compile time,
 * unmatched brackets are detected and an error is raised
 * characters other than `+-><,.[]` are stripped
+* consecutive `+-` are summed up (for example, `++-+-` is turned into `+`)
+* consecutive `><` are summed up likewise
 
 ## Usage
 
