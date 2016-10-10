@@ -1,11 +1,10 @@
 # Brainfux
 
-Brainfux translates brainfuck code into elixir function with the great power of elixir macro.
+Brainfux translates brainfuck code into elixir function.
 
 At the compile time,
-* used tape size is calculated so that runtime allocation will never happen
 * unmatched brackets are detected and an error is raised
-* `<<0>>` is appended to the input
+* characters other than `+-><,.[]` are stripped
 
 ## Usage
 

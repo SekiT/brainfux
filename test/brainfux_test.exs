@@ -21,6 +21,7 @@ defmodule BrainfuxTest do
       """
       defbf echo ",[.,]"
       defbf shift_string ",[+.,]"
+      defbf include_loop ",[[>]+[<]>-]"
     end
 
     assert DefBfTest.hello_world         == "Hello, world!"
@@ -29,6 +30,7 @@ defmodule BrainfuxTest do
     assert DefBfTest.echo                == ""
     assert DefBfTest.shift_string("HAL") == "IBM"
     assert DefBfTest.shift_string        == ""
+    assert DefBfTest.include_loop("\\")  == ""
   end
 
   defmodule DefBfTypeSpecTest do
@@ -83,9 +85,11 @@ defmodule BrainfuxTest do
     use Brainfux
     echo  = bfn ",[.,]"
     shift = bfn ",[+.,]"
+    loop  = bfn ",[[>]+[<]>-]"
 
     assert echo .("foo") == "foo"
     assert shift.("HAL") == "IBM"
+    assert loop .("\\" ) == ""
   end
 
   test "bfn raises unexpected ]" do

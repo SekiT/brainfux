@@ -23,11 +23,13 @@ defmodule Brainfux.Executor do
   end
   def execute(state, ">" <> rest) do
     [head | tail] = state.forward
+    tail = if Enum.empty?(tail), do: [0], else: tail
     new_state = %{%{state | back: [head | state.back]} | forward: tail}
     execute(new_state, rest)
   end
   def execute(state, "<" <> rest) do
     [head | tail] = state.back
+    tail = if Enum.empty?(tail), do: [0], else: tail
     new_state = %{%{state | back: tail} | forward: [head | state.forward]}
     execute(new_state, rest)
   end

@@ -7,6 +7,7 @@ defmodule Brainfux.Mixfile do
       version: "0.1.0",
       elixir: "~> 1.3",
       name: "Brainfux",
+      source_url: "https://github.com/SekiT/brainfux",
       deps: deps(),
       docs: [extras: ["README.md"]],
       dialyzer: [plt_add_deps: :transitive],

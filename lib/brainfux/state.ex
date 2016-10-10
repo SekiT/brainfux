@@ -3,7 +3,7 @@ defmodule Brainfux.State do
   Struct that represents the state of execution.
   """
 
-  defstruct input: '', output: "", back: [], forward: []
+  defstruct input: '', output: "", back: [0], forward: [0]
 
   @type t :: %__MODULE__{
     input:   charlist,

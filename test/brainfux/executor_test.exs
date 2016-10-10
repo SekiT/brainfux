@@ -10,7 +10,7 @@ defmodule Brainfux.ExecutorTest do
     assert state == %State{forward: [-1]}
 
     state = Executor.execute(%State{forward: [0, 1]}, ">")
-    assert state == %State{back: [0], forward: [1]}
+    assert state == %State{back: [0, 0], forward: [1]}
 
     state = Executor.execute(%State{back: [0], forward: [1]}, "<")
     assert state == %State{forward: [0, 1]}
