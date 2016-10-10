@@ -35,7 +35,8 @@ defmodule Brainfux.Preprocessor.Base do
     code
   end
 
-  @spec check_brackets!(non_neg_integer, String.t, non_neg_integer) :: :ok | none
+  @spec check_brackets!(non_neg_integer, String.t, non_neg_integer) ::
+    :ok | none
   defp check_brackets!(_, "", 0), do: :ok
   defp check_brackets!(_, "", depth) do
     raise CompileError, description: "There are #{depth} unmatched \"[\""
