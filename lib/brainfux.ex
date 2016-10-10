@@ -69,10 +69,10 @@ defmodule Brainfux do
   @spec check_brackets(non_neg_integer, String.t, non_neg_integer) :: :ok | none
   defp check_brackets(_, "", 0), do: :ok
   defp check_brackets(_, "", depth) do
-    raise "There are #{depth} unmatched \"[\""
+    raise CompileError, description: "There are #{depth} unmatched \"[\""
   end
   defp check_brackets(position, "]" <> _, 0) do
-    raise "Unexpected \"]\" at position: #{position}"
+    raise CompileError, description: "Unexpected \"]\" at position: #{position}"
   end
   defp check_brackets(position, "]" <> rest, depth) do
     check_brackets(position + 1, rest, depth - 1)
