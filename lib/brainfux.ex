@@ -24,15 +24,15 @@ defmodule Brainfux do
     code = strip_noncode_chars(raw_code)
     %{back: back, forward: forward} = calc_initial_state(code)
 
-    block = quote do
+    block = quote bind_quoted: [code: code, back: back, forward: forward] do
       alias Brainfux.{State, Executor}
       input_list = String.to_charlist(input) ++ [0]
       state = %State{
-        back: unquote(back),
-        forward: unquote(forward),
+        back: back,
+        forward: forward,
         input: input_list
       }
-      %{output: output} = Executor.execute(state, unquote(code))
+      %{output: output} = Executor.execute(state, code)
       output
     end
 
