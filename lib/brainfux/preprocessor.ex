@@ -10,8 +10,8 @@ defmodule Brainfux.Preprocessor do
   @spec process!(String.t) :: String.t | none
   def process!(raw_code) do
     raw_code
-    |> Base.strip_noncode_chars
     |> Base.check_brackets!
+    |> Base.strip_noncode_chars
     |> Base.sumup_plusminus
   end
 end

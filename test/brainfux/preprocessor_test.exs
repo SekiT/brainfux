@@ -8,13 +8,13 @@ defmodule Brainfux.PreprocessorTest do
       :meck.unload
     end
 
+    :meck.expect(Base, :check_brackets!, fn code ->
+      assert code == "+-++--+ foo ><>><<>\n --bar++ \t<<>>+---><<<"
+      code
+    end)
     :meck.expect(Base, :strip_noncode_chars, fn code ->
       assert code == "+-++--+ foo ><>><<>\n --bar++ \t<<>>+---><<<"
       "+-++--+><>><<>--++<<>>+---><<<"
-    end)
-    :meck.expect(Base, :check_brackets!, fn code ->
-      assert code == "+-++--+><>><<>--++<<>>+---><<<"
-      code
     end)
     :meck.expect(Base, :sumup_plusminus, fn code ->
       assert code == "+-++--+><>><<>--++<<>>+---><<<"
@@ -60,6 +60,7 @@ defmodule Brainfux.PreprocessorTest do
       "]"       => " Unexpected \"]\" at position: 0",
       "+]"      => " Unexpected \"]\" at position: 1",
       "+[[]-]]" => " Unexpected \"]\" at position: 6",
+      "foo]"    => " Unexpected \"]\" at position: 3",
       "+[[]"    => " There are 1 unmatched \"[\"",
       "[[++>"   => " There are 2 unmatched \"[\"",
     }
