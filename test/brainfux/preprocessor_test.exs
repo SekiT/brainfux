@@ -18,10 +18,6 @@ defmodule Brainfux.PreprocessorTest do
     end)
     :meck.expect(Base, :sumup_plusminus, fn code ->
       assert code == "+-++--+><>><<>--++<<>>+---><<<"
-      "+><>><<><<>>--><<<"
-    end)
-    :meck.expect(Base, :sumup_rightleft, fn code ->
-      assert code == "+><>><<><<>>--><<<"
       "+>--<<"
     end)
 
@@ -76,35 +72,37 @@ defmodule Brainfux.PreprocessorTest do
 
   test "Base.sumup_plusminus" do
     code_expected_map = %{
-      "+++++"     => "+++++",
-      "-----"     => "-----",
-      "+-"        => "",
-      "-+"        => "",
-      "++--+"     => "+",
-      "--++-"     => "-",
-      "-++++"     => "+++",
-      "+----"     => "---",
-      "++-<>-+><" => "+<>><",
+      "+++++"    => "+++++",
+      "-----"    => "-----",
+      "+-"       => "",
+      "-+"       => "",
+      "++--+"    => "+",
+      "--++-"    => "-",
+      "-++++"    => "+++",
+      "+----"    => "---",
+      ">>>>>"    => ">>>>>",
+      "<<<<<"    => "<<<<<",
+      "><"       => "",
+      "<>"       => "",
+      ">><<>"    => ">",
+      "<<>><"    => "<",
+      "<>>>>"    => ">>>",
+      "><<<<"    => "<<<",
+      "++>>+"    => "++>>+",
+      "--<<-"    => "--<<-",
+      "+<>-"     => "",
+      "-><+"     => "",
+      "++><-"    => "+",
+      "--<>+"    => "-",
+      ">>+-<"    => ">",
+      "<<-+>"    => "<",
+      "+>>-+<<-" => "",
+      ">++<>--<" => "",
+      "+[->]<"   => "+[->]<",
+      ">[<-]+"   => ">[<-]+",
     }
     Enum.each(code_expected_map, fn {code, expected} ->
       assert Base.sumup_plusminus(code) == expected
-    end)
-  end
-
-  test "Base.sumup_rightleft" do
-    code_expected_map = %{
-      ">>>>>"   => ">>>>>",
-      "<<<<<"   => "<<<<<",
-      "><"      => "",
-      "<>"      => "",
-      ">><<>"   => ">",
-      "<<>><"   => "<",
-      "<>>>>"   => ">>>",
-      "><<<<"   => "<<<",
-      ">><+<>-" => ">+-",
-    }
-    Enum.each(code_expected_map, fn {code, expected} ->
-      assert Base.sumup_rightleft(code) == expected
     end)
   end
 end

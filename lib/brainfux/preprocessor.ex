@@ -13,7 +13,6 @@ defmodule Brainfux.Preprocessor do
     |> Base.strip_noncode_chars
     |> Base.check_brackets!
     |> Base.sumup_plusminus
-    |> Base.sumup_rightleft
   end
 end
 
@@ -57,23 +56,12 @@ defmodule Brainfux.Preprocessor.Base do
 
   @spec sumup_plusminus(String.t) :: String.t
   def sumup_plusminus(code) do
-    strip_plusminus = Regex.replace(~r/\+\-/, code           , "")
-    strip_both      = Regex.replace(~r/\-\+/, strip_plusminus, "")
-    if strip_both == code do
-      code
-    else
-      sumup_plusminus(strip_both)
-    end
-  end
+    stripped_once = Regex.replace(~r/\+\-|\-\+|><|<>/, code, "")
 
-  @spec sumup_rightleft(String.t) :: String.t
-  def sumup_rightleft(code) do
-    strip_rightleft = Regex.replace(~r/></, code           , "")
-    strip_both      = Regex.replace(~r/<>/, strip_rightleft, "")
-    if strip_both == code do
+    if stripped_once == code do
       code
     else
-      sumup_rightleft(strip_both)
+      sumup_plusminus(stripped_once)
     end
   end
 end
