@@ -1,5 +1,7 @@
 # Brainfux
 
+[![hex.pm version](https://img.shields.io/hexpm/v/brainfux.svg)](https://hex.pm/packages/brainfux)
+
 Brainfux enables you to define brainfuck function in elixir.
 
 At the compile time,
