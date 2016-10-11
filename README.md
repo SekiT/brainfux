@@ -1,7 +1,7 @@
 # Brainfux
 
 [![hex.pm version](https://img.shields.io/hexpm/v/brainfux.svg)](https://hex.pm/packages/brainfux)
-![travis-ci status](https://travis-ci.org/SekiT/brainfux.svg?branch=master)
+[![travis-ci status](https://travis-ci.org/SekiT/brainfux.svg?branch=master)](https://travis-ci.org/SekiT/brainfux)
 [![Coverage Status](https://coveralls.io/repos/github/SekiT/brainfux/badge.svg)](https://coveralls.io/github/SekiT/brainfux)
 
 Brainfux enables you to define brainfuck function in elixir.
