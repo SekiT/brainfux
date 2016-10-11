@@ -22,6 +22,17 @@ defmodule Brainfux.ExecutorTest do
     assert state == %State{forward: [42], output: <<42>>}
   end
 
+  test "execute nothing" do
+    state = Executor.execute(%State{}, "")
+    assert state == %State{}
+
+    state_before = %State{
+      back: [1], forward: [2], input: [0], output: "a"
+    }
+    state_after = Executor.execute(state_before, "")
+    assert state_after == state_before
+  end
+
   test "execute loop" do
     state = Executor.execute(%State{forward: [2, 0]}, "[>+++<-]")
     assert state == %State{forward: [0, 6]}

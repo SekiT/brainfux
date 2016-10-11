@@ -35,10 +35,11 @@ defmodule Brainfux.PreprocessorTest do
 
   test "Base.strip_noncode_chars/1" do
     code_expected_map = %{
-      "" => "",
-      " " => "",
-      "+++\n[-]" => "+++[-]",
-      "+72." => "+.",
+      ""        => "",
+      " "       => "",
+      "++\n[-]" => "++[-]",
+      "+72."    => "+.",
+      ",>\t<."  => ",><.",
     }
     Enum.each(code_expected_map, fn {code, expected} ->
       assert Base.strip_noncode_chars(code) == expected
@@ -47,6 +48,8 @@ defmodule Brainfux.PreprocessorTest do
 
   test "Base.check_brackets!/1" do
     valid_codes = [
+      "",
+      "+.",
       "[]",
       "+[-]",
       "[>+++[>++<-]<-]",
@@ -73,6 +76,7 @@ defmodule Brainfux.PreprocessorTest do
 
   test "Base.sumup_plusminus" do
     code_expected_map = %{
+      ""         => "",
       "+++++"    => "+++++",
       "-----"    => "-----",
       "+-"       => "",
