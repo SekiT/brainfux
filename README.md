@@ -1,12 +1,22 @@
 # Brainfux
 
-Brainfux translates brainfuck code into elixir function.
+Brainfux enables you to define brainfuck function in elixir.
 
 At the compile time,
 * unmatched brackets are detected and an error is raised
 * characters other than `+-><,.[]` are stripped
 * consecutive `+-` are summed up (for example, `++-+-` is turned into `+`)
 * consecutive `><` are summed up likewise
+
+## Installation
+
+Add `:brainfux` to your list of dependencies in `mix.exs`:
+
+```elixir
+def deps do
+  [{:brainfux, "~> 0.2.1"}]
+end
+```
 
 ## Usage
 
