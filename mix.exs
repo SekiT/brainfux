@@ -15,6 +15,7 @@ defmodule Brainfux.Mixfile do
       deps: deps(),
       docs: [extras: ["README.md"]],
       dialyzer: [plt_add_deps: :transitive],
+      test_coverage: [tool: ExCoveralls],
     ]
   end
 
@@ -26,10 +27,11 @@ defmodule Brainfux.Mixfile do
 
   defp deps do
     [
-      {:ex_doc  , "~> 0.14.1", only: :dev },
-      {:dialyxir, "~> 0.3.5" , only: :dev },
-      {:credo   , "~> 0.4.12", only: :dev },
-      {:meck    , "~> 0.8.4" , only: :test},
+      {:ex_doc     , "~> 0.14.1", only: :dev },
+      {:dialyxir   , "~> 0.3.5" , only: :dev },
+      {:credo      , "~> 0.4.12", only: :dev },
+      {:meck       , "~> 0.8.4" , only: :test},
+      {:excoveralls, "~> 0.5.6" , only: :test},
     ]
   end
 
