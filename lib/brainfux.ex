@@ -18,16 +18,7 @@ defmodule Brainfux do
   Define module function from brainfuck code.
   """
   defmacro defbf({name, _, [raw_code | _]}) do
-    code = Preprocessor.process!(raw_code)
-
-    block = quote bind_quoted: [code: code] do
-      alias Brainfux.{State, Executor}
-      input_list = String.to_charlist(input) ++ [0]
-      state = %State{input: input_list}
-      %{output: output} = Executor.execute(state, code)
-      output
-    end
-
+    block = exec_block(raw_code)
     quote do
       @spec unquote(name)(String.t) :: String.t
       def unquote(name)(input \\ ""), do: unquote(block)
@@ -38,16 +29,33 @@ defmodule Brainfux do
   Define anonymous function from brainfuck code.
   """
   defmacro bfn(raw_code) do
-    code = Preprocessor.process!(raw_code)
+    block = exec_block(raw_code)
+    quote do
+      fn input -> unquote(block) end
+    end
+  end
 
-    quote bind_quoted: [code: code] do
-      fn input ->
-        alias Brainfux.{State, Executor}
-        input_list = String.to_charlist(input) ++ [0]
-        state = %State{input: input_list}
-        %{output: output} = Executor.execute(state, code)
-        output
-      end
+  @spec exec_block(String.t) :: Macro.t
+  defp exec_block(raw_code) do
+    {state, code} = Preprocessor.process!(raw_code)
+    %{back: back, forward: forward, output: output} = state
+
+    quote bind_quoted: [
+      back:    back,
+      forward: forward,
+      output:  output,
+      code:    code,
+    ] do
+      alias Brainfux.{State, Executor}
+      input_list = String.to_charlist(input) ++ [0]
+      state = %State{
+        back:    back,
+        forward: forward,
+        input:   input_list,
+        output:  output,
+      }
+      %{output: result} = Executor.execute(state, code)
+      result
     end
   end
 end

@@ -11,6 +11,7 @@ At the compile time,
 * characters other than `+-><,.[]` are stripped
 * `+-`, `-+`, `<>`, `><` are removed recursively
 (for example, `++>>-+<<-` is turned into `+`)
+* leading `+`, `-`, `>`, `<`, `.` are computed beforehand
 
 ## Installation
 

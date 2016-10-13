@@ -1,6 +1,6 @@
 defmodule Brainfux.PreprocessorTest do
   use ExUnit.Case
-  alias Brainfux.Preprocessor
+  alias Brainfux.{Preprocessor, State}
   alias Brainfux.Preprocessor.Base
 
   test "process!/1 just pipes code through base functions" do
@@ -9,28 +9,33 @@ defmodule Brainfux.PreprocessorTest do
     end
 
     :meck.expect(Base, :check_brackets!, fn code ->
-      assert code == "+-++--+ foo ><>><<>\n --bar++ \t<<>>+---><<<"
+      assert code == "+>+<->\n<++A-\t [--+<].>>-,-<<"
       code
     end)
     :meck.expect(Base, :strip_noncode_chars, fn code ->
-      assert code == "+-++--+ foo ><>><<>\n --bar++ \t<<>>+---><<<"
-      "+-++--+><>><<>--++<<>>+---><<<"
+      assert code == "+>+<->\n<++A-\t [--+<].>>-,-<<"
+      "+>+<-><++-[--+<].>>-,-<<"
     end)
     :meck.expect(Base, :sumup_plusminus, fn code ->
-      assert code == "+-++--+><>><<>--++<<>>+---><<<"
-      "+>--<<"
+      assert code == "+>+<-><++-[--+<].>>-,-<<"
+      "+>+<[-<].>>-,-<<"
+    end)
+    :meck.expect(Base, :compute_deterministic_part, fn code ->
+      assert code == "+>+<[-<].>>-,-<<"
+      {%State{forward: [1, 1]}, "[-<].>>-,-<<"}
     end)
 
-    code = Preprocessor.process!("+-++--+ foo ><>><<>\n --bar++ \t<<>>+---><<<")
+    {state, code} = Preprocessor.process!("+>+<->\n<++A-\t [--+<].>>-,-<<")
 
-    assert code == "+>--<<"
+    assert {state, code} == {%State{forward: [1, 1]}, "[-<].>>-,-<<"}
   end
 
   test "process!/1 does every process" do
-    raw_code = "+-++--+ foo ><>><<>\n --bar++ \t<<>>+---><<<"
-    expected = "+>--<<"
+    raw_code = "+>+<->\n<++A-\t [--+<].>>-,-<<"
+    expected_state = %State{forward: [1, 1]}
+    expected_code = "[-<].>>-,-<<"
 
-    assert Preprocessor.process!(raw_code) == expected
+    assert Preprocessor.process!(raw_code) == {expected_state, expected_code}
   end
 
   test "Base.strip_noncode_chars/1" do
@@ -109,5 +114,24 @@ defmodule Brainfux.PreprocessorTest do
     Enum.each(code_expected_map, fn {code, expected} ->
       assert Base.sumup_plusminus(code) == expected
     end)
+  end
+
+  test "Base.compute_deterministic_part" do
+    raw_code_state_after_code_list = [
+      {""    , %State{}, ""},
+      {"+"   , %State{forward: [1]}, ""},
+      {"-"   , %State{forward: [-1]}, ""},
+      {">"   , %State{back: [0, 0]}, ""},
+      {"<"   , %State{forward: [0, 0]}, ""},
+      {"+."  , %State{forward: [1], output: <<1>>}, ""},
+      {"+.>-", %State{back: [1, 0], forward: [-1], output: <<1>>}, ""},
+      {"++,-", %State{forward: [2]}, ",-"},
+      {"-[+]", %State{forward: [-1]}, "[+]"},
+    ]
+    Enum.each(raw_code_state_after_code_list,
+      fn {raw_code, state, after_code} ->
+        assert {state, after_code} == Base.compute_deterministic_part(raw_code)
+      end
+    )
   end
 end

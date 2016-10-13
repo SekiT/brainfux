@@ -6,13 +6,15 @@ defmodule Brainfux.Preprocessor do
   """
 
   alias Brainfux.Preprocessor.Base
+  alias Brainfux.State
 
-  @spec process!(String.t) :: String.t | none
+  @spec process!(String.t) :: {State.t, String.t} | none
   def process!(raw_code) do
     raw_code
     |> Base.check_brackets!
     |> Base.strip_noncode_chars
     |> Base.sumup_plusminus
+    |> Base.compute_deterministic_part
   end
 end
 
@@ -22,6 +24,8 @@ defmodule Brainfux.Preprocessor.Base do
 
   These functions are used by `Brainfux.Preprocessor.process!/1`.
   """
+
+  alias Brainfux.{State, Executor}
 
   @spec strip_noncode_chars(String.t) :: String.t
   def strip_noncode_chars(code) do
@@ -62,6 +66,18 @@ defmodule Brainfux.Preprocessor.Base do
       code
     else
       sumup_plusminus(stripped_once)
+    end
+  end
+
+  @spec compute_deterministic_part(String.t) :: {State.t, String.t}
+  def compute_deterministic_part(code) do
+    case Regex.run(~r/^[\+\-<>\.]+/, code) do
+      nil ->
+        {%State{}, code}
+      [deterministic_part] ->
+        state = Executor.execute(%State{}, deterministic_part)
+        rest = String.trim_leading(code, deterministic_part)
+        {state, rest}
     end
   end
 end
