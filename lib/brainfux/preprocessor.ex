@@ -14,6 +14,7 @@ defmodule Brainfux.Preprocessor do
     |> Base.check_brackets!
     |> Base.strip_noncode_chars
     |> Base.sumup_plusminus
+    |> Base.remove_plus_or_minus_before_read
     |> Base.compute_deterministic_part
   end
 end
@@ -67,6 +68,11 @@ defmodule Brainfux.Preprocessor.Base do
     else
       sumup_plusminus(stripped_once)
     end
+  end
+
+  @spec remove_plus_or_minus_before_read(String.t) :: String.t
+  def remove_plus_or_minus_before_read(code) do
+    Regex.replace(~r/([\+\-]+),/, code, ",")
   end
 
   @spec compute_deterministic_part(String.t) :: {State.t, String.t}

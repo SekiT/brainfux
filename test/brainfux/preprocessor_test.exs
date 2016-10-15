@@ -20,20 +20,24 @@ defmodule Brainfux.PreprocessorTest do
       assert code == "+>+<-><++-[--+<].>>-,-<<"
       "+>+<[-<].>>-,-<<"
     end)
-    :meck.expect(Base, :compute_deterministic_part, fn code ->
+    :meck.expect(Base, :remove_plus_or_minus_before_read, fn code ->
       assert code == "+>+<[-<].>>-,-<<"
-      {%State{forward: [1, 1]}, "[-<].>>-,-<<"}
+      "+>+<[-<].>>,-<<"
+    end)
+    :meck.expect(Base, :compute_deterministic_part, fn code ->
+      assert code == "+>+<[-<].>>,-<<"
+      {%State{forward: [1, 1]}, "[-<].>>,-<<"}
     end)
 
     {state, code} = Preprocessor.process!("+>+<->\n<++A-\t [--+<].>>-,-<<")
 
-    assert {state, code} == {%State{forward: [1, 1]}, "[-<].>>-,-<<"}
+    assert {state, code} == {%State{forward: [1, 1]}, "[-<].>>,-<<"}
   end
 
   test "process!/1 does every process" do
     raw_code = "+>+<->\n<++A-\t [--+<].>>-,-<<"
     expected_state = %State{forward: [1, 1]}
-    expected_code = "[-<].>>-,-<<"
+    expected_code = "[-<].>>,-<<"
 
     assert Preprocessor.process!(raw_code) == {expected_state, expected_code}
   end
@@ -113,6 +117,21 @@ defmodule Brainfux.PreprocessorTest do
     }
     Enum.each(code_expected_map, fn {code, expected} ->
       assert Base.sumup_plusminus(code) == expected
+    end)
+  end
+
+  test "Base.remove_plus_or_minus_before_read" do
+    code_expected_map = %{
+      ""       => "",
+      "+"      => "+",
+      "--,"    => ",",
+      "<++,"   => "<,",
+      ">--,"   => ">,",
+      ">+,<+," => ">,<,",
+      ",-->-," => ",-->,",
+    }
+    Enum.each(code_expected_map, fn {code, expected} ->
+      assert Base.remove_plus_or_minus_before_read(code) == expected
     end)
   end
 
