@@ -9,50 +9,41 @@ defmodule Brainfux.PreprocessorTest do
     end
 
     :meck.expect(Base, :check_brackets!, fn code ->
-      assert code == "+>+<->\n<++A-\t [--+<].>>-,-<<"
+      assert code == "+>+<->\n<++A-\t [--+<].>>-,-.<<"
       code
     end)
     :meck.expect(Base, :strip_noncode_chars, fn code ->
-      assert code == "+>+<->\n<++A-\t [--+<].>>-,-<<"
-      "+>+<-><++-[--+<].>>-,-<<"
+      assert code == "+>+<->\n<++A-\t [--+<].>>-,-.<<"
+      "+>+<-><++-[--+<].>>-,-.<<"
+    end)
+    :meck.expect(Base, :trim_trailing_reducible_part, fn code ->
+      assert code == "+>+<-><++-[--+<].>>-,-.<<"
+      "+>+<-><++-[--+<].>>-,-."
     end)
     :meck.expect(Base, :sumup_plusminus, fn code ->
-      assert code == "+>+<-><++-[--+<].>>-,-<<"
-      "+>+<[-<].>>-,-<<"
+      assert code == "+>+<-><++-[--+<].>>-,-."
+      "+>+<[-<].>>-,-."
     end)
     :meck.expect(Base, :remove_plus_or_minus_before_read, fn code ->
-      assert code == "+>+<[-<].>>-,-<<"
-      "+>+<[-<].>>,-<<"
+      assert code == "+>+<[-<].>>-,-."
+      "+>+<[-<].>>,-."
     end)
     :meck.expect(Base, :compute_deterministic_part, fn code ->
-      assert code == "+>+<[-<].>>,-<<"
-      {%State{forward: [1, 1]}, "[-<].>>,-<<"}
+      assert code == "+>+<[-<].>>,-."
+      {%State{forward: [1, 1]}, "[-<].>>,-."}
     end)
 
-    {state, code} = Preprocessor.process!("+>+<->\n<++A-\t [--+<].>>-,-<<")
+    {state, code} = Preprocessor.process!("+>+<->\n<++A-\t [--+<].>>-,-.<<")
 
-    assert {state, code} == {%State{forward: [1, 1]}, "[-<].>>,-<<"}
+    assert {state, code} == {%State{forward: [1, 1]}, "[-<].>>,-."}
   end
 
   test "process!/1 does every process" do
-    raw_code = "+>+<->\n<++A-\t [--+<].>>-,-<<"
+    raw_code = "+>+<->\n<++A-\t [--+<].>>-,-.<<"
     expected_state = %State{forward: [1, 1]}
-    expected_code = "[-<].>>,-<<"
+    expected_code = "[-<].>>,-."
 
     assert Preprocessor.process!(raw_code) == {expected_state, expected_code}
-  end
-
-  test "Base.strip_noncode_chars/1" do
-    code_expected_map = %{
-      ""        => "",
-      " "       => "",
-      "++\n[-]" => "++[-]",
-      "+72."    => "+.",
-      ",>\t<."  => ",><.",
-    }
-    Enum.each(code_expected_map, fn {code, expected} ->
-      assert Base.strip_noncode_chars(code) == expected
-    end)
   end
 
   test "Base.check_brackets!/1" do
@@ -80,6 +71,39 @@ defmodule Brainfux.PreprocessorTest do
       assert_raise(CompileError, message, fn ->
         Base.check_brackets!(code)
       end)
+    end)
+  end
+
+  test "Base.strip_noncode_chars/1" do
+    code_expected_map = %{
+      ""        => "",
+      " "       => "",
+      "++\n[-]" => "++[-]",
+      "+72."    => "+.",
+      ",>\t<."  => ",><.",
+    }
+    Enum.each(code_expected_map, fn {code, expected} ->
+      assert Base.strip_noncode_chars(code) == expected
+    end)
+  end
+
+  test "Base.trim_trailing_reducible_part" do
+    code_expected_map = %{
+      ""           => "",
+      "+"          => "",
+      "."          => ".",
+      ",."         => ",.",
+      ".+"         => ".",
+      "[.]"        => "[.]",
+      "+[.-]+"     => "+[.-]",
+      "+[.[>]<-]"  => "+[.[>]<-]",
+      "+[.[>]<-]+" => "+[.[>]<-]",
+      "+.++.--"    => "+.++.",
+      "+[.-]+.++"  => "+[.-]+.",
+      "+[+[.-]>.]" => "+[+[.-]>.]",
+    }
+    Enum.each(code_expected_map, fn {code, expected} ->
+      assert Base.trim_trailing_reducible_part(code) == expected
     end)
   end
 

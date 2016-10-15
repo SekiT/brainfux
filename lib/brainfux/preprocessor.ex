@@ -13,6 +13,7 @@ defmodule Brainfux.Preprocessor do
     raw_code
     |> Base.check_brackets!
     |> Base.strip_noncode_chars
+    |> Base.trim_trailing_reducible_part
     |> Base.sumup_plusminus
     |> Base.remove_plus_or_minus_before_read
     |> Base.compute_deterministic_part
@@ -27,11 +28,6 @@ defmodule Brainfux.Preprocessor.Base do
   """
 
   alias Brainfux.{State, Executor}
-
-  @spec strip_noncode_chars(String.t) :: String.t
-  def strip_noncode_chars(code) do
-    String.replace(code, ~r/[^+\-<>,\.\[\]]/, "")
-  end
 
   @spec check_brackets!(String.t) :: String.t | none
   def check_brackets!(code) do
@@ -57,6 +53,40 @@ defmodule Brainfux.Preprocessor.Base do
   defp check_brackets!(position, code, depth) do
     rest = Regex.replace(~r/./s, code, "", global: false)
     check_brackets!(position + 1, rest, depth)
+  end
+
+  @spec strip_noncode_chars(String.t) :: String.t
+  def strip_noncode_chars(code) do
+    String.replace(code, ~r/[^+\-<>,\.\[\]]/, "")
+  end
+
+  @spec trim_trailing_reducible_part(String.t) :: String.t
+  def trim_trailing_reducible_part(code) do
+    last_part = String.split(code, ".") |> List.last
+    reducible_part = skip_to_close_bracket(last_part, 0, "", "")
+    if reducible_part == "" do
+      code
+    else
+      String.trim_trailing(code, reducible_part)
+    end
+  end
+
+  @spec skip_to_close_bracket(String.t, integer, String.t, String.t) :: String.t
+  defp skip_to_close_bracket(code, depth, inner, outer) do
+    case Regex.run(~r/^[^\[\]]*([\[\]])/, code) do
+      nil ->
+        outer <> code
+      [match | ["[" | []]] ->
+        rest = String.trim_leading(code, match)
+        skip_to_close_bracket(rest, depth + 1, inner, outer <> match)
+      [match | ["]" | []]] ->
+        rest = String.trim_leading(code, match)
+        if depth == 0 do
+          skip_to_close_bracket(rest, 0, inner <> outer <> match, "")
+        else
+          skip_to_close_bracket(rest, depth - 1, inner, outer <> match)
+        end
+    end
   end
 
   @spec sumup_plusminus(String.t) :: String.t

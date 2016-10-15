@@ -9,6 +9,7 @@ Brainfux enables you to define brainfuck function in elixir.
 At the compile time,
 * unmatched brackets are detected and an error is raised
 * characters other than `+-><,.[]` are stripped
+* code after the last `.` or `[]` including `.` are trimmed
 * `+` or `-` preceding `,` are removed
 * `+-`, `-+`, `<>`, `><` are removed recursively
 (for example, `++>>-+<<-` is turned into `+`)
