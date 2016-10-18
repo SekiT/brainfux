@@ -59,21 +59,23 @@ defmodule Brainfux.Executor do
 
   @spec find_matching_bracket(String.t) :: {String.t, String.t}
   defp find_matching_bracket(code) do
-    find_matching_bracket([], String.to_charlist(code), 0)
+    find_matching_bracket("", code, 0)
   end
 
-  @spec find_matching_bracket(charlist, charlist, non_neg_integer) ::
+  @spec find_matching_bracket(String.t, String.t, non_neg_integer) ::
     {String.t, String.t}
-  defp find_matching_bracket(block, [?] | rest], 0) do
-    {List.to_string(block), List.to_string(rest)}
-  end
-  defp find_matching_bracket(block, [?] | rest], depth) do
-    find_matching_bracket(block ++ [?]], rest, depth - 1)
-  end
-  defp find_matching_bracket(block, [?[ | rest], depth) do
-    find_matching_bracket(block ++ [?[], rest, depth + 1)
-  end
-  defp find_matching_bracket(block, [head | rest], depth) do
-    find_matching_bracket(block ++ [head], rest, depth)
+  defp find_matching_bracket(block, code, depth) do
+    case Regex.run(~r/([^\[\]]*)([\[\]])(.*)/, code) do
+      nil ->
+        {block, code}
+      [_, before, "]", rest] ->
+        if depth == 0 do
+          {block <> before, rest}
+        else
+          find_matching_bracket(block <> before <> "]", rest, depth - 1)
+        end
+      [_, before, "[", rest] ->
+        find_matching_bracket(block <> before <> "[", rest, depth + 1)
+    end
   end
 end

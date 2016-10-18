@@ -73,14 +73,12 @@ defmodule Brainfux.Preprocessor.Base do
 
   @spec skip_to_close_bracket(String.t, integer, String.t, String.t) :: String.t
   defp skip_to_close_bracket(code, depth, inner, outer) do
-    case Regex.run(~r/^[^\[\]]*([\[\]])/, code) do
+    case Regex.run(~r/^([^\[\]]*([\[\]]))(.*)/, code) do
       nil ->
         outer <> code
-      [match | ["[" | []]] ->
-        rest = String.trim_leading(code, match)
+      [_, match, "[", rest] ->
         skip_to_close_bracket(rest, depth + 1, inner, outer <> match)
-      [match | ["]" | []]] ->
-        rest = String.trim_leading(code, match)
+      [_, match, "]", rest] ->
         if depth == 0 do
           skip_to_close_bracket(rest, 0, inner <> outer <> match, "")
         else
