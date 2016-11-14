@@ -62,7 +62,7 @@ defmodule Brainfux.Preprocessor.Base do
 
   @spec trim_trailing_reducible_part(String.t) :: String.t
   def trim_trailing_reducible_part(code) do
-    last_part = String.split(code, ".") |> List.last
+    last_part = code |> String.split(".") |> List.last
     reducible_part = skip_to_close_bracket(last_part, 0, "", "")
     if reducible_part == "" do
       code
