@@ -6,7 +6,7 @@ defmodule Brainfux.Mixfile do
   def project do
     [
       app: :brainfux,
-      version: "0.2.4",
+      version: "0.2.5",
       elixir: "~> 1.3",
       name: "Brainfux",
       description: description(),

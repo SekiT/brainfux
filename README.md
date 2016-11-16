@@ -21,7 +21,7 @@ Add `:brainfux` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:brainfux, "~> 0.2.4"}]
+  [{:brainfux, "~> 0.2.5"}]
 end
 ```
 
