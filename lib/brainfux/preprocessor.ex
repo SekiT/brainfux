@@ -11,12 +11,12 @@ defmodule Brainfux.Preprocessor do
   @spec process!(String.t) :: {State.t, String.t} | none
   def process!(raw_code) do
     raw_code
-    |> Base.check_brackets!
-    |> Base.strip_noncode_chars
-    |> Base.trim_trailing_reducible_part
-    |> Base.sumup_plusminus
-    |> Base.remove_plus_or_minus_before_read
-    |> Base.compute_deterministic_part
+    |> Base.check_brackets!()
+    |> Base.strip_noncode_chars()
+    |> Base.trim_trailing_reducible_part()
+    |> Base.sumup_plusminus()
+    |> Base.remove_plus_or_minus_before_read()
+    |> Base.compute_deterministic_part()
   end
 end
 
