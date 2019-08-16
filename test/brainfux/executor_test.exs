@@ -26,9 +26,7 @@ defmodule Brainfux.ExecutorTest do
     state = Executor.execute(%State{}, "")
     assert state == %State{}
 
-    state_before = %State{
-      back: [1], forward: [2], input: [0], output: "a"
-    }
+    state_before = %State{back: [1], forward: [2], input: [0], output: "a"}
     state_after = Executor.execute(state_before, "")
     assert state_after == state_before
   end
