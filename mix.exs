@@ -27,11 +27,11 @@ defmodule Brainfux.Mixfile do
 
   defp deps do
     [
-      {:ex_doc     , "~> 0.14.5", only: :dev },
-      {:dialyxir   , "~> 0.4.1" , only: :dev },
-      {:credo      , "~> 0.5.3" , only: :dev },
-      {:meck       , "~> 0.8.4" , only: :test},
-      {:excoveralls, "~> 0.5.7" , only: :test},
+      {:ex_doc     , "~> 0.21.1", only: :dev },
+      {:dialyxir   , "~> 0.5.1" , only: :dev },
+      {:credo      , "~> 1.1.1" , only: :dev },
+      {:meck       , "~> 0.8.13", only: :test},
+      {:excoveralls, "~> 0.11.1", only: :test},
     ]
   end
 
