@@ -65,7 +65,7 @@ defmodule Brainfux.Executor do
   @spec find_matching_bracket(String.t, String.t, non_neg_integer) ::
     {String.t, String.t}
   defp find_matching_bracket(block, code, depth) do
-    case Regex.run(~r/([^\[\]]*)([\[\]])(.*)/, code) do
+    case Regex.run(~R/([^\[\]]*)([\[\]])(.*)/, code) do
       nil ->
         {block, code}
       [_, before, "]", rest] ->

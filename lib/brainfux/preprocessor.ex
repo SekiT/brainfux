@@ -51,13 +51,13 @@ defmodule Brainfux.Preprocessor.Base do
     check_brackets!(position + 1, rest, depth + 1)
   end
   defp check_brackets!(position, code, depth) do
-    rest = Regex.replace(~r/./s, code, "", global: false)
+    rest = Regex.replace(~R/./s, code, "", global: false)
     check_brackets!(position + 1, rest, depth)
   end
 
   @spec strip_noncode_chars(String.t) :: String.t
   def strip_noncode_chars(code) do
-    String.replace(code, ~r/[^+\-<>,\.\[\]]/, "")
+    String.replace(code, ~R/[^+\-<>,\.\[\]]/, "")
   end
 
   @spec trim_trailing_reducible_part(String.t) :: String.t
@@ -73,7 +73,7 @@ defmodule Brainfux.Preprocessor.Base do
 
   @spec skip_to_close_bracket(String.t, integer, String.t, String.t) :: String.t
   defp skip_to_close_bracket(code, depth, inner, outer) do
-    case Regex.run(~r/^([^\[\]]*([\[\]]))(.*)/, code) do
+    case Regex.run(~R/^([^\[\]]*([\[\]]))(.*)/, code) do
       nil ->
         outer <> code
       [_, match, "[", rest] ->
@@ -89,7 +89,7 @@ defmodule Brainfux.Preprocessor.Base do
 
   @spec sumup_plusminus(String.t) :: String.t
   def sumup_plusminus(code) do
-    stripped_once = Regex.replace(~r/\+\-|\-\+|><|<>/, code, "")
+    stripped_once = Regex.replace(~R/\+\-|\-\+|><|<>/, code, "")
 
     if stripped_once == code do
       code
@@ -100,12 +100,12 @@ defmodule Brainfux.Preprocessor.Base do
 
   @spec remove_plus_or_minus_before_read(String.t) :: String.t
   def remove_plus_or_minus_before_read(code) do
-    Regex.replace(~r/([\+\-]+),/, code, ",")
+    Regex.replace(~R/([\+\-]+),/, code, ",")
   end
 
   @spec compute_deterministic_part(String.t) :: {State.t, String.t}
   def compute_deterministic_part(code) do
-    case Regex.run(~r/^[\+\-<>\.]+/, code) do
+    case Regex.run(~R/^[\+\-<>\.]+/, code) do
       nil ->
         {%State{}, code}
       [deterministic_part] ->
