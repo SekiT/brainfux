@@ -3,8 +3,6 @@ defmodule Brainfux do
   Translates brainfuck code into elixir function.
   """
 
-  alias Brainfux.{State, Preprocessor}
-
   @doc """
   Just import this module.
   """
@@ -37,7 +35,7 @@ defmodule Brainfux do
 
   @spec exec_block(String.t) :: Macro.t
   defp exec_block(raw_code) do
-    {state, code} = Preprocessor.process!(raw_code)
+    {state, code} = Brainfux.Preprocessor.process!(raw_code)
     %{back: back, forward: forward, output: output} = state
 
     quote bind_quoted: [
@@ -46,15 +44,14 @@ defmodule Brainfux do
       output:  output,
       code:    code,
     ] do
-      alias Brainfux.{State, Executor}
       input_list = String.to_charlist(input) ++ [0]
-      state = %State{
+      state = %Brainfux.State{
         back:    back,
         forward: forward,
         input:   input_list,
         output:  output,
       }
-      %{output: result} = Executor.execute(state, code)
+      %{output: result} = Brainfux.Executor.execute(state, code)
       result
     end
   end
