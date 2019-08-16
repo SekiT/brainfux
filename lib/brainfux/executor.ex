@@ -46,8 +46,7 @@ defmodule Brainfux.Executor do
     execute(new_state, rest)
   end
   def execute(state, "[" <> rest) do
-    [head | _] = state.forward
-    if head == 0 do
+    if hd(state.forward) == 0 do
       {_, rest} = find_matching_bracket(rest)
       execute(state, rest)
     else
