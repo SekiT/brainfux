@@ -27,7 +27,7 @@ defmodule Brainfux.Preprocessor.Base do
   These functions are used by `Brainfux.Preprocessor.process!/1`.
   """
 
-  alias Brainfux.{State, Executor}
+  alias Brainfux.{Executor, State}
 
   @spec check_brackets!(String.t) :: String.t | none
   def check_brackets!(code) do
