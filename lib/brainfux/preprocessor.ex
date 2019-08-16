@@ -88,12 +88,9 @@ defmodule Brainfux.Preprocessor.Base do
 
   @spec sumup_plusminus(String.t) :: String.t
   def sumup_plusminus(code) do
-    stripped_once = Regex.replace(~R/\+\-|\-\+|><|<>/, code, "")
-
-    if stripped_once == code do
-      code
-    else
-      sumup_plusminus(stripped_once)
+    case Regex.replace(~R/\+\-|\-\+|><|<>/, code, "") do
+      ^code         -> code
+      stripped_once -> sumup_plusminus(stripped_once)
     end
   end
 
