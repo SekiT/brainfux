@@ -50,8 +50,7 @@ defmodule Brainfux.Preprocessor.Base do
   defp check_brackets!(position, "[" <> rest, depth) do
     check_brackets!(position + 1, rest, depth + 1)
   end
-  defp check_brackets!(position, code, depth) do
-    rest = Regex.replace(~R/./s, code, "", global: false)
+  defp check_brackets!(position, <<_::binary-size(1)>> <> rest, depth) do
     check_brackets!(position + 1, rest, depth)
   end
 
