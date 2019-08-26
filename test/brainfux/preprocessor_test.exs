@@ -60,12 +60,12 @@ defmodule Brainfux.PreprocessorTest do
     end)
 
     code_message_map = %{
-      "]"       => " Unexpected \"]\" at position: 0",
-      "+]"      => " Unexpected \"]\" at position: 1",
-      "+[[]-]]" => " Unexpected \"]\" at position: 6",
-      "foo]"    => " Unexpected \"]\" at position: 3",
-      "+[[]"    => " There are 1 unmatched \"[\"",
-      "[[++>"   => " There are 2 unmatched \"[\"",
+      "]"       => ~S( Unexpected "]" at position: 0),
+      "+]"      => ~S( Unexpected "]" at position: 1),
+      "+[[]-]]" => ~S( Unexpected "]" at position: 6),
+      "foo]"    => ~S( Unexpected "]" at position: 3),
+      "+[[]"    => ~S( There are 1 unmatched "["),
+      "[[++>"   => ~S( There are 2 unmatched "["),
     }
     Enum.each(code_message_map, fn {code, message} ->
       assert_raise(CompileError, message, fn ->

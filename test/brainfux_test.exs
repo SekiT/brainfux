@@ -30,7 +30,7 @@ defmodule BrainfuxTest do
     assert DefBfTest.echo                == ""
     assert DefBfTest.shift_string("HAL") == "IBM"
     assert DefBfTest.shift_string        == ""
-    assert DefBfTest.include_loop("\\")  == ""
+    assert DefBfTest.include_loop("a")   == ""
   end
 
   defmodule DefBfTypeSpecTest do
@@ -50,14 +50,14 @@ defmodule BrainfuxTest do
   end
 
   test "defbf raises unexpected ]" do
-    assert_raise CompileError, " Unexpected \"]\" at position: 1", fn ->
+    assert_raise CompileError, ~S( Unexpected "]" at position: 1), fn ->
       defmodule EndNotStartedBracket do
         use Brainfux
         defbf echo ",].,"
       end
     end
 
-    assert_raise CompileError, " Unexpected \"]\" at position: 5", fn ->
+    assert_raise CompileError, ~S( Unexpected "]" at position: 5), fn ->
       defmodule TooMuchEndBracket do
         use Brainfux
         defbf echo ",[.],]"
@@ -66,14 +66,14 @@ defmodule BrainfuxTest do
   end
 
   test "defbf raises unmatched [" do
-    assert_raise CompileError, " There are 2 unmatched \"[\"", fn ->
+    assert_raise CompileError, ~S( There are 2 unmatched "["), fn ->
       defmodule NoEndBracket do
         use Brainfux
         defbf echo ",[.,["
       end
     end
 
-    assert_raise CompileError, " There are 1 unmatched \"[\"", fn ->
+    assert_raise CompileError, ~S( There are 1 unmatched "["), fn ->
       defmodule LackOfEndBracket do
         use Brainfux
         defbf echo ",[.[,]"
@@ -89,11 +89,11 @@ defmodule BrainfuxTest do
 
     assert echo .("foo") == "foo"
     assert shift.("HAL") == "IBM"
-    assert loop .("\\" ) == ""
+    assert loop .("a"  ) == ""
   end
 
   test "bfn raises unexpected ]" do
-    assert_raise CompileError, " Unexpected \"]\" at position: 1", fn ->
+    assert_raise CompileError, ~S( Unexpected "]" at position: 1), fn ->
       # Here we define module and use bfn in it.
       # Otherwise it raises at compile time of this test code.
       defmodule EndNotStartedBracket do
@@ -104,7 +104,7 @@ defmodule BrainfuxTest do
       end
     end
 
-    assert_raise CompileError, " Unexpected \"]\" at position: 5", fn ->
+    assert_raise CompileError, ~S( Unexpected "]" at position: 5), fn ->
       defmodule TooMuchEndBracket do
         use Brainfux
         def echo(str) do
@@ -115,7 +115,7 @@ defmodule BrainfuxTest do
   end
 
   test "bfn raises unmatched [" do
-    assert_raise CompileError, " There are 2 unmatched \"[\"", fn ->
+    assert_raise CompileError, ~S( There are 2 unmatched "["), fn ->
       defmodule NoEndBracket do
         use Brainfux
         def echo(str) do
@@ -124,7 +124,7 @@ defmodule BrainfuxTest do
       end
     end
 
-    assert_raise CompileError, " There are 1 unmatched \"[\"", fn ->
+    assert_raise CompileError, ~S( There are 1 unmatched "["), fn ->
       defmodule LackOfEndBracket do
         use Brainfux
         def echo(str) do
