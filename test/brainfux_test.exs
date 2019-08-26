@@ -38,15 +38,14 @@ defmodule BrainfuxTest do
     defbf echo ",[.,]"
 
     # Getter for typespecs
-    spec = Module.get_attribute(__MODULE__, :spec) |> Macro.escape
+    spec = Module.get_attribute(__MODULE__, :spec) |> Macro.escape()
     def specs, do: unquote(spec)
   end
 
   test "defbf adds typespec" do
-    specs = DefBfTypeSpecTest.specs
-    |> Enum.map(fn {:spec, expr, _env} -> Macro.to_string(expr) end)
+    [{:spec, expr, _env}] = DefBfTypeSpecTest.specs()
 
-    assert "echo(String.t()) :: String.t()" in specs
+    assert Macro.to_string(expr) == "echo(String.t()) :: String.t()"
   end
 
   test "defbf raises unexpected ]" do
